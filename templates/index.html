@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Cyber Threat Dashboard</title>
+<style>
+body { font-family: Arial; background: #0f172a; color: white; padding: 20px; }
+h1 { color: #38bdf8; }
+.card { background: #1e293b; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+input, textarea { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; }
+button { background: #38bdf8; color: black; padding: 10px 20px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+.red { color: #f87171; } .orange { color: #fbbf24; } .green { color: #4ade80; }
+</style>
+</head>
+<body>
+<h1>🛡️ Cyber Threat Dashboard</h1>
+<p>By Abel Mwedihanga | NAMPOL | MSc Cyber Security</p>
+
+<div class="card">
+<h2>1. Port Scanner</h2>
+<form method="POST">
+<input type="hidden" name="form_type" value="port">
+<input type="text" name="host" placeholder="Enter host e.g. 127.0.0.1 or google.com" required>
+<button type="submit">Scan Ports</button>
+</form>
+{% if port_result %}
+<p><b>Host:</b> {{ port_result.host }}</p>
+{% for p in port_result.ports %}
+<p>Port {{ p.port }} - {{ p.service }} - OPEN</p>
+{% else %}
+<p>No common open ports found.</p>
+{% endfor %}
+{% endif %}
+</div>
+
+<div class="card">
+<h2>2. Phishing URL Checker</h2>
+<form method="POST">
+<input type="hidden" name="form_type" value="phishing">
+<input type="text" name="url" placeholder="Paste suspicious URL" required>
+<button type="submit">Check URL</button>
+</form>
+{% if phishing_result %}
+<p class="{{ phishing_result.color }}"><b>{{ phishing_result.result }}</b> (Score: {{ phishing_result.score }})</p>
+{% for r in phishing_result.reasons %}
+<p>- {{ r }}</p>
+{% endfor %}
+{% endif %}
+</div>
+
+<div class="card">
+<h2>3. Log Analyzer</h2>
+<form method="POST">
+<input type="hidden" name="form_type" value="logs">
+<textarea name="logs" rows="6" placeholder="Paste logs here... e.g. Failed login from 192.168.1.10"></textarea>
+<button type="submit">Analyze Logs</button>
+</form>
+{% if log_result %}
+<p>Total Lines: {{ log_result.total_lines }} | Failed/Errors: {{ log_result.failed }}</p>
+<p>Top IPs:</p>
+{% for ip, count in log_result.top_ips %}
+<p>{{ ip }} - {{ count }} times</p>
+{% endfor %}
+{% endif %}
+</div>
+</body>
+</html>
